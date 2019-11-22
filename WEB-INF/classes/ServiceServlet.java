@@ -2,6 +2,7 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import java.util.*;
 
 public class ServiceServlet extends HttpServlet
 {
@@ -13,8 +14,8 @@ public class ServiceServlet extends HttpServlet
 		fw.write(data);
 		fw.close();
 
-		ProcessBuilder pb=new ProcessBuilder("c:\ipfs\ipfs.exe","add",f.getAbsolutePath());
-		pb.redirectOutputStream(true);
+		ProcessBuilder pb=new ProcessBuilder("c:/ipfs/ipfs.exe","add",f.getAbsolutePath());
+		pb.redirectOutput();
 
 		Process p=pb.start();
 
@@ -35,10 +36,11 @@ public class ServiceServlet extends HttpServlet
 		baos=null;
 
 		String str=new String(buffer,"UTF-8");
+		System.out.println(str);
 		StringReader sr=new StringReader(str);
 
 		BufferedReader br=new BufferedReader(sr);
-		br.readLine();
+		//br.readLine();
 		String line=br.readLine();
 		String []tokens=line.split(" ");
 		String hash=tokens[1];
@@ -52,8 +54,8 @@ public class ServiceServlet extends HttpServlet
 
 	public static String getFileFromIPFS(String hash) throws Exception
 	{
-		ProcessBuilder pb=new ProcessBuilder("c:\ipfs\ipfs.exe","cat",hash);
-		pb.redirectOutputStream(true);
+		ProcessBuilder pb=new ProcessBuilder("c:/ipfs/ipfs.exe","cat",hash);
+		pb.redirectOutput();
 
 		Process p=pb.start();
 
@@ -100,7 +102,7 @@ public class ServiceServlet extends HttpServlet
 
 		Map<String,Object> map=new HashMap<>();  //deserialize json str
 
-		String command=map.get("command");
+		String command=(String)map.get("command");
 
 		if("PUT".equalsIgnoreCase(command))
 		{
